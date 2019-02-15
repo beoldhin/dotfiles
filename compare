@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+srcdir=""
+dstdir=""
+
+setdir() {
+    srcdir=$1
+    dstdir=$2
+}
+
+compare() {
+    diff ${srcdir}/$1 ${dstdir}/$1
+}
+
+setdir . ~/
+compare .bash_aliases
+compare .bashrc
+compare .inputrc
+compare .tmux.conf
+compare .vimrc
+compare .weatherrc
+compare .Xresources
+
+setdir .config ~/.config
+compare compton.conf
+
+setdir .config/fish ~/.config/fish
+compare config.fish
+compare fish_variables
+
+setdir .config/i3 ~/.config/i3
+compare config
+
+setdir .config/i3blocks ~/.config/i3blocks
+compare config
+
+setdir .config/i3blocks/scripts ~/.config/i3blocks/scripts
+compare time
+compare weather
+
+setdir scripts ~/Binaries
+compare rsync_backup
+compare rsync_crestore
+compare rsync_mirror
+compare rsync_restore
+compare rsync_setperms
+
+setdir .vim/ftdetect ~/.vim/ftdetect
+compare Rnw.vim
+compare tex.vim
+
+setdir .vim/UltiSnips ~/.vim/UltiSnips
+compare bib.snippets
+compare tex.snippets
+compare text.snippets
+
