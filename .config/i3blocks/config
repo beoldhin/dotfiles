@@ -1,0 +1,12 @@
+command=~/.config/i3blocks/scripts/$BLOCK_NAME
+separator_block_width=15
+markup=pango
+
+[weather]
+interval=3600
+color=#A4C2F4
+
+[time]
+interval=30
+color=#91E78B
+

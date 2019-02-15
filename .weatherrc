@@ -1,0 +1,24 @@
+[default]
+defargs = ivalo,joensuu,vaasa,home
+metric = True
+
+[home]
+description = Conditions at Home
+metar = http://tgftp.nws.noaa.gov/data/observations/metar/decoded/EFHK.TXT
+
+[mummo]
+description = Conditions at Kuopio
+metar = http://tgftp.nws.noaa.gov/data/observations/metar/decoded/EFKU.TXT
+
+[ivalo]
+description = Conditions at Ivalo
+metar = http://tgftp.nws.noaa.gov/data/observations/metar/decoded/EFIV.TXT
+
+[vaasa]
+description = Conditions at Vaasa
+metar = http://tgftp.nws.noaa.gov/data/observations/metar/decoded/EFVA.TXT
+
+[joensuu]
+description = Conditions at Joensuu
+metar = http://tgftp.nws.noaa.gov/data/observations/metar/decoded/EFJO.TXT
+

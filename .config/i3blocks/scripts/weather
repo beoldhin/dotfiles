@@ -1,0 +1,5 @@
+#!/bin/sh
+weather_str=`curl 'https://wttr.in/Helsinki:Finland?format=2'`
+
+echo $weather_str
+
