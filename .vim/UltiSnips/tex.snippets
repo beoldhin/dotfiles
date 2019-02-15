@@ -1,0 +1,391 @@
+# Epigraph (package epigraph)
+snippet xepi "" w
+\epigraph{$1}{$2}
+$0
+endsnippet
+
+# Table (package tabu)
+snippet xtab "" w
+\begin{tabu}[$1]
+  \toprule
+  $2 \\\\
+  \bottomrule
+\end{tabu}
+$0
+endsnippet
+
+# Graphics (package graphicx)
+snippet xgra "" w
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=$1\linewidth]{$2}
+  \caption{$3}
+\label{$4:$5}
+\end{figure}
+$0
+endsnippet
+
+# Unnumbered alignment, used for vertically aligned equations in homeworks
+snippet xali "" w
+\begin{align*}
+  $1
+\end{align*}$0
+endsnippet
+
+# Unumbered equation, used for referencing textbooks etc.
+snippet xequ "" w
+\begin{equation*}
+  $1
+\end{equation*}$0
+endsnippet
+
+# Fractional numbers
+snippet xfra "" w
+\frac{$1}{$2}$0
+endsnippet
+
+# Automatically resized absolute value
+snippet xabs "" w
+\xabs*{$1}$0
+endsnippet
+
+# Automatically resized parentheses
+snippet xpar "" w
+\xparen*{$1}$0
+endsnippet
+
+# Automatically resized braces
+snippet xbrace "" w
+\xbrace*{$1}$0
+endsnippet
+
+# Automatically resized brackets
+snippet xbrack "" w
+\xbrack*{$1}$0
+endsnippet
+
+# Cases for grouped equations
+snippet xcas "" w
+\begin{cases}
+  $1
+\end{cases}$0
+endsnippet
+
+# Overline, used for recurring decimals
+# o: Recurring decimals to overline
+snippet xove "" w
+\overline{$1}$0
+endsnippet
+
+# Number format, used inside text blocks and "SI"
+# n: Number
+snippet xnum "" w
+\num{$1}$0
+endsnippet
+
+# SI format, for value and unit
+# v: Value
+# u: Unit
+snippet xsia "" w
+\SI{$1}{$2}$0
+endsnippet
+
+# SI format, for unit only
+# u: Unit
+snippet xsib "" w
+\si{$1}$0
+endsnippet
+
+# Square root of value
+# v: Value
+snippet xsra "" w
+\sqrt{$1}$0
+endsnippet
+
+# Nth root of value
+# r: Number of root
+# v: Value
+snippet xsrb "" w
+\sqrt[$1]{$2}$0
+endsnippet
+
+# Predefined multiplication symbol (dot or cross)
+snippet xmul "" w
+\multx $0
+endsnippet
+
+# School: Intermediary state for multiplication:
+# Left side multiplied by value
+# v: Value
+snippet xxmu "" w
+\quad \left| \multx $1\right. \\\\
+endsnippet
+
+# School: Intermediary state for division:
+# Left side divided by value
+# v: Value
+snippet xxdi "" w
+\quad \left| \div $1\right. \\\\
+endsnippet
+
+# School: Expansion with ending ')', expansion on left:
+# Used when expanding fractional numbers
+# e: Expansion
+# f: Fractional
+snippet xexp "" w
+\leftidx{^{\left.$1\right)}}{$2}{}$0
+endsnippet
+
+# School: Reduction with starting '(', reduction on right
+# f: Fractional
+# e: Reduction
+snippet xred "" w
+\leftidx{}{$1}{^{\left($2\right.}}$0
+endsnippet
+
+# School: Intermediary note for GCD:
+# Used when working with fractional numbers
+# Format: "a GCD b = c"
+snippet xgcd "" w
+\quad \left| \text{gcd}\left($1,$2\right) = $3\right. \\\\
+endsnippet
+
+# School: Intermediary note for LCM:
+# Used when working with fractional numbers
+# Format: "a LCD b = c"
+snippet xlcm "" w
+\quad \left| \text{lcm}\left($1,$2\right) = $3\right. \\\\
+endsnippet
+
+# Sum (sigma)
+# i: Initial state (subscript)
+# n: Number of operations (superscript)
+# s: Expression for summation
+snippet xsum "" w
+\sum\limits_{$1}^{$2} $3
+endsnippet
+
+# Todo comment (package todonotes)
+# c: Color
+# h: Percentage of color
+# n: Note
+snippet xtod "" w
+\todo[color=$1!$2,inline]{$3}$0
+endsnippet
+
+# Autocite
+# k: Keyword (mit in "mit:johnson")
+# v: Value (johnson in "mit:johnson")
+snippet xaca "" w
+\autocite{$1:$2}$0
+endsnippet
+
+# Autocite with page number reference
+# p: Page number
+# k: Keyword (mit in "mit:johnson")
+# d: Value (johnson in "mit:johson")
+snippet xacb "" w
+\autocite[$1]{$2:$3}$0
+endsnippet
+
+# Closed interval as in "[a, b]"
+# i1: First interval
+# i2: Second interval
+snippet xina "" w
+\interval{$1}{$2}$0
+endsnippet
+
+# Defined interval ("]a, b]" and similar)
+# d: Interval definition ("open left" and similar)
+# i1: First interval
+# i2: Second interval
+snippet xinb "" w
+\interval[$1]{$2}{$3}$0
+endsnippet
+
+# Italic text (for references without .bib)
+# t: Text to italisize
+snippet xtit "" w
+\textit{$1}$0
+endsnippet
+
+# Emphasized text (for making bold etc.)
+# t: Text to emphasize
+snippet xemp "" w
+\emph{$1}$0
+endsnippet
+
+# Phantom text (for creating space but not showing)
+# t: Text to make phantom
+snippet xpha "" w
+\phantom{$1}$0
+endsnippet
+
+# Exponentation
+# e: Exponent
+snippet xpow "" w
+^{$1}$0
+endsnippet
+
+# Footnote placeholder
+snippet xfnm "" w
+\onifnm{}$0
+endsnippet
+
+# Footnote mark
+snippet xfnt "" w
+\onifnt{$1}$0
+endsnippet
+
+# Footnote add to counter
+snippet xfnc "" w
+\onifnc{$1}$0
+endsnippet
+
+# Basic quotation (package csquotes)
+# q: Text to quote
+snippet xenq "" w
+\enquote{$1}$0
+endsnippet
+
+# Block quote (package csquotes)
+# q: Text to quote
+snippet xbqa "" w
+\blockquote{$1}$0
+endsnippet
+
+# Block quote with author (package csquotes)
+# p: Page to quote
+# b: Book to quote
+# q: Text to quote
+snippet xbqb "" w
+\blockcquote[$1]{$2}{$3}$0
+endsnippet
+
+# Highlight a block of text (package soul)
+snippet xhil "" w
+\hl{$1}$0
+endsnippet
+
+# Inline code block listing (package listings)
+snippet xlsa "" w
+\begin{lstlisting}[language=$1]
+$2
+\end{lstlisting}
+$0
+endsnippet
+
+# File code block listing (package listings)
+snippet xlsb "" w
+\lstinputlisting[language=$1]{$2}
+$0
+endsnippet
+
+# Enumerated list
+snippet xenu "" w
+\begin{enumerate}
+\item $1
+\end{enumerate}
+$0
+endsnippet
+
+# Itemized list
+snippet xite "" w
+\begin{itemize}
+\item $1
+\end{itemize}
+$0
+endsnippet
+
+# Matrix (parentheses)
+snippet xmap "" w
+\begin{pmatrix}
+$1
+\end{pmatrix}
+$0
+endsnippet
+
+# Matrix (bracketed)
+snippet xmab "" w
+\begin{bmatrix}
+$1
+\end{bmatrix}
+$0
+endsnippet
+
+# Degree symbol in math mode
+snippet xdeg "" w
+^{\circ}
+$0
+endsnippet
+
+# Limits (lim) construct
+snippet xlim "" w
+\lim_{$1 \to $2}$0
+endsnippet
+
+# Centi meter (siunitx)
+snippet ycm "" w
+\centi\meter$0
+endsnippet
+
+# Gram per centimeter cubed (siunitx)
+snippet ygpcmc "" w
+\gram\per\centi\meter\cubed$0
+endsnippet
+
+# Kilocalorie (siunitx)
+snippet ykc "" w
+\kilo\calorie$0
+endsnippet
+
+# Kilocalorie per hour (siunitx)
+snippet ykcph "" w
+\kilo\calorie\per\hour$0
+endsnippet
+
+# Kilogram per meter cubed (siunitx)
+snippet ykgpmc "" w
+\kilo\gram\per\meter\cubed$0
+endsnippet
+
+# Kilometers per hour (siunitx)
+snippet ykmph "" w
+\kilo\meter\per\hour$0
+endsnippet
+
+# Litre per second (siunitx)
+snippet ylps "" w
+\litre\per\second$0
+endsnippet
+
+# Meters cubed (siunitx)
+snippet ymc "" w
+\meter\cubed$0
+endsnippet
+
+# Meters per second (siunitx)
+snippet ymps "" w
+\meter\per\second$0
+endsnippet
+
+# Meters per second squared (siunitx)
+snippet ympss "" w
+\meter\per\second\squared$0
+endsnippet
+
+# Meters per second cubed (siunitx)
+snippet ympsc "" w
+\meter\per\second\cubed$0
+endsnippet
+
+# Meters squared (siunitx)
+snippet yms "" w
+\meter\squared$0
+endsnippet
+
+# Watt per meter squared (siunitx)
+snippet ywpms "" w
+\watt\per\meter\squared$0
+endsnippet
+

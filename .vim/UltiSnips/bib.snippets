@@ -1,0 +1,33 @@
+# Biblatex entry for online content
+# k: Keyword (mit in "mit:johnson")
+# d: Value (johnson in "mit:johson")
+snippet xbibo
+@Online{online:$1,
+  Title        = {$2},
+  Author       = {$3},
+  Date         = {$4},
+  Url          = {$5},
+  Organization = {$6},
+  Urldate      = {`date +%Y-%m-%d`}
+}
+$0
+endsnippet
+
+# Biblatex entry for book content
+# k: Keyword (mit in "mit:johnson")
+# d: Value (johnson in "mit:johson")
+snippet xbibb
+@Book{book:$1,
+  Title     = {$2},
+  Author    = {$3},
+  Year      = {$4},
+  Edition   = {$5},
+  Editor    = {$6},
+  ISBN      = {$7},
+  Pagetotal = {$8},
+  Publisher = {$9},
+  Subtitle  = {$10}
+}
+$0
+endsnippet
+
