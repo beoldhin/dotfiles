@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+ssh_hostconfig_root="azog-quetzal"
+backup_dir="/run/media/quetzal/Backup"
+dest_dir="/home/quetzal/Mirrored"
+includelist="rsync_cincludelist"
+dryrun_opts="--dry-run"
+if [ $# -eq 1 ]; then
+    if [ "$1" != "realrun" ]; then
+        echo "Unknown parameter!"
+        echo "Usage: $0 [<realrun>]"
+        exit 1
+    fi
+    dryrun_opts=""
+fi
+if ( sudo ssh $ssh_hostconfig_root "[ ! -d ${backup_dir} ]" ); then
+    echo "Backup directory doesn't exist!"
+    exit 1
+fi
+if [ ! -d $dest_dir ]; then
+    echo "Restore directory doesn't exist!"
+fi
+generic_opts="--archive --no-owner --no-group --verbose --progress --human-readable"
+deletes_opts="--delete-before --delete-excluded"
+# Note that the option "--delete-during" is recommended but it doesn't act in a
+# similar way compared to "--delete-before", i.e. it doesn't guarantee space
+# usage efficieny the way "--delete-before" does
+filelist_opts="--include-from=${includelist}"
+source_def="${ssh_hostconfig_root}:${backup_dir}/."
+destination_def="${dest_dir}/."
+sudo rsync $dryrun_opts $generic_opts $deletes_opts $filelist_opts $source_def $destination_def
+if [ "$1" == "realrun" ]; then
+    ./rsync_setperms
+fi
+

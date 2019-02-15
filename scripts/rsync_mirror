@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+    echo "Invalid number of parameters."
+    echo "Usage: $0 <mirrornumber> [<realrun>]"
+    exit 1
+fi
+backup_dir="/run/media/quetzal/Backup/"
+mirror_dir="/run/media/quetzal/Mirror${1}/"
+dryrun_opts="--dry-run"
+user="quetzal"
+if [ $# -eq 2 ]; then
+    if [ "$2" != "realrun" ]; then
+        echo "Unknown parameter!"
+        exit 1
+    fi
+    dryrun_opts=""
+fi
+if [ ! -d "$backup_dir" ]; then
+    echo "Backup directory doesn't exist!"
+    exit 1
+fi
+if [ ! -d "$mirror_dir" ]; then
+    echo "Mirror directory doesn't exist!"
+    exit 1
+fi
+generic_opts="--archive --verbose --progress --human-readable"
+deletes_opts="--delete-before"
+# Note that the option "--delete-during" is recommended but it doesn't act in a
+# similar way compared to "--delete-before", i.e. it doesn't guarantee space
+# usage efficieny the way "--delete-before" does
+sudo rsync $dryrun_opts $generic_opts $deletes_opts $backup_dir $mirror_dir
+if [ $# -eq 2 ] && [ "$2" == "realrun" ]; then
+    echo "Writing changes to disk..."
+    sync
+fi
+

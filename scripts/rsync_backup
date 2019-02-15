@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+ssh_hostconfig_root="azog-quetzal"
+dest_dir="/run/media/quetzal/Backup"
+includelist="rsync_includelist"
+backup_id=`hostname --fqdn`
+dryrun_opts="--dry-run"
+if [ $# -eq 1 ]; then
+    if [ "$1" != "realrun" ]; then
+        echo "Unknown parameter!"
+        echo "Usage: $0 [<realrun>]"
+        exit 1
+    fi
+    dryrun_opts=""
+fi
+if ( sudo ssh $ssh_hostconfig_root "[ ! -d ${dest_dir} ]" ); then
+    echo "Backup directory doesn't exist!"
+    exit 1
+fi
+dest_dir="${dest_dir}/${backup_id}"
+if ( sudo ssh $ssh_hostconfig_root "[ -d ${dest_dir} ]" ); then
+    read -p "Destination \"${backup_id}\" already exists, continue? (y/n): " answer
+    if [ "$answer" != 'y' ] && [ "$answer" != "Y" ]; then
+        echo "Ending backup..."
+        exit 1
+    fi
+fi
+if [ "$1" == "realrun" ]; then
+    if [ -f ./backup_admin ]; then
+        ./backup_admin
+    fi
+fi
+generic_opts="--archive --relative --verbose --progress --human-readable"
+deletes_opts="--delete-before --delete-excluded"
+# Note that the option "--delete-during" is recommended but it doesn't act in a
+# similar way compared to "--delete-before", i.e. it doesn't guarantee space
+# usage efficieny the way "--delete-before" does
+filelist_opts="--include-from=${includelist}"
+source_def="/."
+destination_def="${ssh_hostconfig_root}:${dest_dir}/."
+sudo rsync $dryrun_opts $generic_opts $deletes_opts $filelist_opts $source_def $destination_def
+if [ $# -eq 1 ] && [ "$1" == "realrun" ]; then
+    echo "Updating index..."
+    updatedb -v -l 0 -o ~/Documents/Backups/backup.db -U /run/media/quetzal/Backup
+    echo "Writing changes to disk..."
+    sync
+fi
+

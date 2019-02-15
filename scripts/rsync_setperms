@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set_one_permission() {
+    user=$1
+    destpath=$2
+    if [ -d $destpath ]; then
+        echo "Setting permissions as \"${user}\" for ${destpath}..."
+        sudo chown -R ${user}:${user} $destpath
+    fi
+}
+
+# NOTE: We have to explicitly set ONLY the rsync directory permissions, not all
+# Some of the files under /home/<user> are owned by other users.
+set_permissions() {
+    user=$1
+    isuser=$(id -u $user > /dev/null 2>&1; echo $?)
+    if [ $isuser == 0 ]; then
+        if [ $user == "git" ]; then
+            set_one_permission git "/srv/git"
+        else
+            set_one_permission $user "/home/${user}/Desktop"
+            set_one_permission $user "/home/${user}/Documents"
+            set_one_permission $user "/home/${user}/Downloads"
+            set_one_permission $user "/home/${user}/Mirrored"
+            set_one_permission $user "/home/${user}/Music"
+            set_one_permission $user "/home/${user}/Pictures"
+            set_one_permission $user "/home/${user}/Videos"
+            set_one_permission $user "/home/${user}/Projects"
+        fi
+    fi
+}
+
+set_permissions quetzal
+set_permissions leela
+set_permissions git
+
+echo "Writing file permission changes to disk..."
+sync
+
