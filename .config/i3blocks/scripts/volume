@@ -1,6 +1,12 @@
 #!/bin/sh
 
-vol=$(pulsemixer --get-volume | awk '{print $1}')
+muted="$(pulsemixer --get-mute)"
 
-echo "${vol} %"
+if [ $muted -eq 0 ]; then
+    vol="$(pulsemixer --get-volume | awk '{print $1}') %"
+else
+    vol="Muted"
+fi
+
+echo "${vol}"
 

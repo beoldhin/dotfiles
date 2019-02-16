@@ -173,8 +173,6 @@ bindsym $mod+r mode "resize"
 
 # Starts dunst for notifications:
 exec --no-startup-id dunst
-# Composite manager:
-exec --no-startup-id xcompmgr
 
 # Needed for i3-gaps
 for_window [class="^.*"] border pixel 2
@@ -215,5 +213,5 @@ exec --no-startup-id feh --bg-scale ~/Pictures/wallpapers-1440p/46\ -\ Aqk8ZAU.j
 
 # Start Compton
 
-exec compton
+exec --no-startup-id compton --config ~/.config/compton.conf -b
 
