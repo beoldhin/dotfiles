@@ -171,8 +171,15 @@ bindsym $mod+r mode "resize"
 
 # Own part starts
 
-# Starts dunst for notifications:
+# Set keyboard:
+exec_always "setxkbmap -layout fi -option grp:alt_shift_toggle"
+exec_always "xset r rate 250 25"
+# Start Compton:
+exec --no-startup-id compton --config ~/.config/compton.conf -b
+# Start dunst for notifications:
 exec --no-startup-id dunst
+# Set background image:
+exec --no-startup-id feh --randomize --bg-scale ~/Pictures/wallpapers-1440p/*
 
 # Needed for i3-gaps
 for_window [class="^.*"] border pixel 2
@@ -201,17 +208,4 @@ bindsym XF86AudioPlay  exec playerctl play
 bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext  exec playerctl next
 bindsym XF86AudioPrev  exec playerctl previous
-
-# Keyboard
-
-exec_always "setxkbmap -layout fi -option grp:alt_shift_toggle"
-exec_always "xset r rate 250 25"
-
-# Set background image
-
-exec --no-startup-id feh --bg-scale ~/Pictures/wallpapers-1440p/46\ -\ Aqk8ZAU.jpg
-
-# Start Compton
-
-exec --no-startup-id compton --config ~/.config/compton.conf -b
 

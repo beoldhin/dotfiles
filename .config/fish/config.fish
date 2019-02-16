@@ -20,6 +20,12 @@ alias mybackupdupes="rdfind -deleteduplicates false -dryrun true /run/media/quet
 alias mybackupupdate="updatedb -v -l 0 -o ~/Documents/Backups/backup.db -U /run/media/quetzal/Backup"
 alias mybackupfind="locate -i -d ~/Documents/Backups/backup.db "
 alias mybackupusage="ncdu /run/media/quetzal/Backup/"
+alias mymountbackup="sudo mkdir -p /run/media/quetzal/Backup && sudo mount -L Backup"
+alias mymountmirror1="sudo mkdir -p /run/media/quetzal/Mirror1 && sudo mount -L Mirror1"
+alias mymountmirror2="sudo mkdir -p /run/media/quetzal/Mirror2 && sudo mount -L Mirror2"
+alias myumountbackup="sudo umount /run/media/quetzal/Backup"
+alias myumountmirror1="sudo umount /run/media/quetzal/Mirror1"
+alias myumountmirror2="sudo umount /run/media/quetzal/Mirror2"
 
 # Bluetooth definitions
 alias mybtreset="sudo rfkill unblock bluetooth && sudo hciconfig hci0 reset"
