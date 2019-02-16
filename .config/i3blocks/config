@@ -2,6 +2,11 @@ command=~/.config/i3blocks/scripts/$BLOCK_NAME
 separator_block_width=15
 markup=pango
 
+[volume]
+label=♪
+interval=once
+signal=10
+
 [weather]
 interval=3600
 color=#A4C2F4

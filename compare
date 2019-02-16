@@ -2,6 +2,7 @@
 
 srcdir=""
 dstdir=""
+user="quetzal"
 
 setdir() {
     srcdir=$1
@@ -9,10 +10,17 @@ setdir() {
 }
 
 compare() {
-    diff ${srcdir}/$1 ${dstdir}/$1
+    src="${srcdir}/$1"
+    if [ -z $dstdir ]; then
+        dst="/home/${user}/$1"
+    else
+        dst="/home/${user}/${dstdir}/$1"
+    fi
+    echo "Compare \"${src}\" to \"${dst}\"..."
+    diff "$src" "$dst"
 }
 
-setdir . ~/
+setdir "." ""
 compare .bash_aliases
 compare .bashrc
 compare .inputrc
@@ -21,35 +29,39 @@ compare .vimrc
 compare .weatherrc
 compare .Xresources
 
-setdir .config ~/.config
+setdir ".config" ".config"
 compare compton.conf
 
-setdir .config/fish ~/.config/fish
+setdir ".config/dunst" ".config/dunst"
+compare dunstrc
+
+setdir ".config/fish" ".config/fish"
 compare config.fish
 compare fish_variables
 
-setdir .config/i3 ~/.config/i3
+setdir ".config/i3" ".config/i3"
 compare config
 
-setdir .config/i3blocks ~/.config/i3blocks
+setdir ".config/i3blocks" ".config/i3blocks"
 compare config
 
-setdir .config/i3blocks/scripts ~/.config/i3blocks/scripts
+setdir ".config/i3blocks/scripts" ".config/i3blocks/scripts"
 compare time
 compare weather
+compare volume
 
-setdir scripts ~/Binaries
+setdir "scripts" "Binaries"
 compare rsync_backup
 compare rsync_crestore
 compare rsync_mirror
 compare rsync_restore
 compare rsync_setperms
 
-setdir .vim/ftdetect ~/.vim/ftdetect
+setdir ".vim/ftdetect" ".vim/ftdetect"
 compare Rnw.vim
 compare tex.vim
 
-setdir .vim/UltiSnips ~/.vim/UltiSnips
+setdir ".vim/UltiSnips" ".vim/UltiSnips"
 compare bib.snippets
 compare tex.snippets
 compare text.snippets

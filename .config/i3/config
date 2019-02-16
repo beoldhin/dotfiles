@@ -171,6 +171,11 @@ bindsym $mod+r mode "resize"
 
 # Own part starts
 
+# Starts dunst for notifications:
+exec --no-startup-id dunst
+# Composite manager:
+exec --no-startup-id xcompmgr
+
 # Needed for i3-gaps
 for_window [class="^.*"] border pixel 2
 gaps inner 5
@@ -184,9 +189,9 @@ bar {
 
 # Pulse Audio controls
 
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5%   # increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5%   # decrease sound volume
-bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute 0 toggle  # mute volume
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% && pkill -RTMIN+10 i3blocks   # increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% && pkill -RTMIN+10 i3blocks   # decrease sound volume
+bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute 0 toggle && pkill -RTMIN+10 i3blocks  # mute volume
 
 # Disable title bar
 
