@@ -169,17 +169,30 @@ bindsym $mod+r mode "resize"
 #         status_command i3status
 # }
 
-# Own part starts
+# ... Own parts start ...
 
 # Set keyboard:
+
+# Show models: localectl list-x11-keymap-models
+# Show layouts: localectl list-x11-keymap-layouts
+# Show layout variants: localectl list-x11-keymap-variants fi
+# Show switching options: localectl list-x11-keymap-options | grep grp:
+# Show all options: localctl list-x11-keymap-options
+
 exec_always "setxkbmap -layout fi -option grp:alt_shift_toggle"
 exec_always "xset r rate 250 25"
+
 # Start Compton:
 exec --no-startup-id compton --config ~/.config/compton.conf -b
+
 # Start dunst for notifications:
 exec --no-startup-id dunst
+
 # Set background image:
 exec --no-startup-id feh --randomize --bg-scale ~/Pictures/wallpapers-1440p/*
+
+# Unclutter makes the mouse invisible after a brief period
+exec --no-startup-id unclutter
 
 # Needed for i3-gaps
 for_window [class="^.*"] border pixel 2
@@ -204,8 +217,19 @@ bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute 0 toggle &
 
 # Media player controls
 
-bindsym XF86AudioPlay  exec playerctl play
+# bindsym XF86AudioPlay  exec playerctl play
+bindsym XF86AudioPlay  exec playerctl play-pause
 bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext  exec playerctl next
 bindsym XF86AudioPrev  exec playerctl previous
+
+# Other controls
+
+bindsym XF86HomePage exec google-chrome-stable
+bindsym XF86Calculator exec speedcrunch
+
+# Assignments
+
+assign [class="vlc"] 4
+assign [class="yakyak"] 5
 

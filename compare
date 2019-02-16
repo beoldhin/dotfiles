@@ -50,6 +50,13 @@ compare time
 compare weather
 compare volume
 
+setdir ".config/ranger" ".config/ranger"
+compare commands.py
+compare rc.conf
+compare rifle.conf
+compare scope.sh
+compare shortcuts.conf
+
 setdir "scripts" "Binaries"
 compare rsync_backup
 compare rsync_crestore
