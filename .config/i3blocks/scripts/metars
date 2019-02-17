@@ -1,8 +1,25 @@
 #!/usr/bin/env python3
 
+# Required steps before running this scripts:
+# > sudo pip install python-metar
+# > sudo pacman -S libnotify
+# Possibly:
+# > sudo pacman -S dunst
+
+import os
 import sys
+import datetime
+import subprocess
 import urllib.request
 from metar import Metar
+
+class MetarsEnablements:
+    temperature = True
+    dewpoint = False
+    feelsLike = True
+    wind = True
+    pressure = False
+    visibility = True
 
 class MetarsConfMetric1:
     temperatureUnit = 'C'
@@ -32,12 +49,26 @@ class Metars:
     obs = {}
     metrics = None
     station = None
+    enablements = None
     url = 'https://tgftp.nws.noaa.gov/data/observations/metar/stations/{}.TXT'
-    def __init__(self, metrics):
+    def __init__(self, metrics, enablements):
         self.metrics = metrics
-    def getChillMetric(self, temp, velocity):
-        # temp = celcius
-        # velocity = km/h
+        self.enablements = enablements
+    def runCommand(self, command):
+        retCode = 0
+        retText = ''
+        try:
+            retText = subprocess.check_output(command, shell=True).decode('UTF-8')
+        except subprocess.CalledProcessError as e:
+            retCode = e.returncode
+            retText = e.output.decode('UTF-8')
+        except:
+            retCode = -999
+            retText = 'ERROR: Unknown exception.'
+        return retCode, retText
+    def getChillMetric(self, temp, velocity):  # temp = C, velocity = km/h
+        if temp > 10.0 or velocity <= 4.8:
+            return None
         expt = velocity ** 0.16
         twc = 13.12 + (0.6215 * temp) - (11.37 * expt) + (0.3965 * temp * expt)
         return twc
@@ -80,61 +111,88 @@ class Metars:
             tempInCelsius = obs.temp.value('C')
             if 'wind_speed' in self.obs:
                 speedInKmh = obs.wind_speed.value('KMH')
-                twc = self.convertCelciusTo(self.getChillMetric(tempInCelsius, speedInKmh))
-                self.obs['twc'] = '{} {}'.format(round(twc,1), self.metrics.temperatureSym)
+                metricChill = self.getChillMetric(tempInCelsius, speedInKmh)
+                if metricChill != None:
+                    twc = self.convertCelciusTo(metricChill)
+                    self.obs['twc'] = '{} {}'.format(round(twc,1), self.metrics.temperatureSym)
             if 'wind_gust' in self.obs:
                 speedInKmh = obs.wind_speed.value('KMH')
-                twc = self.convertCelciusTo(self.getChillMetric(tempInCelsius, speedInKmh))
-                self.obs['twcgust'] = '{} {}'.format(round(twc,1), self.metrics.temperatureSym)
+                metricChill = self.getChillMetric(tempInCelsius, speedInKmh)
+                if metricChill != None:
+                    twc = self.convertCelciusTo(metricChill)
+                    self.obs['twcgust'] = '{} {}'.format(round(twc,1), self.metrics.temperatureSym)
         # print(self.obs)
     def getStationData(self, station):
         url = self.url.format(station)
         page = urllib.request.urlopen(url)
-        metartext = str(page.read()).split('\\n')
-        if len(metartext) < 2:
-            print('Metar error')
-            sys.exit(0)
-        obs = Metar.Metar(metartext[1])
-        return obs
+        stationData = str(page.read()).split('\\n')
+        return stationData
+    def processMetars(self, station, blockSelect):
+        metars = self.getStationData(station)
+        for metar in metars:
+            self.obs.clear()
+            # metar = 'METAR KEWR 111851Z VRB03G19KT 2SM R04R/3000VP6000FT TSRA BR FEW015 BKN040CB BKN065 OVC200 22/22 A2987 RMK AO2 PK WND 29028/1817 WSHFT 1812 TSB05RAB22 SLP114 FRQ LTGICCCCG TS OHD AND NW -N-E MOV NE P0013 T02270215'
+            try:
+                obs = Metar.Metar(metar)
+                if blockSelect == True:
+                    cmd = 'notify-send -t 0 "{}"'.format(obs)
+                    self.runCommand(cmd)
+                self.extractObservations(obs)
+                weather = self.createWeatherString(obs)
+                print(weather)
+            except Metar.ParserError as e:
+                pass
     def createWeatherString(self, obs):
         weather = ''
         if 'station_id' in self.obs:
             weather += self.obs['station_id'] + ':'
         else:
             weather += '?:'
-        if 'temp' in self.obs:
-            weather += ' ' + self.obs['temp']
-        if 'dewpt' in self.obs:
-            weather += ' dewpt ' + self.obs['dewpt']
-        if 'twc' in self.obs:
-            weather += ' feels ' + self.obs['twc']
-        if 'twcgust' in self.obs:
-            weather += ' feelsgust ' + self.obs['twcgust']
-        if 'wind_dir' in self.obs or 'wind_speed' in self.obs:
-            weather += ' wind'
-        if 'wind_dir' in self.obs:
-            weather += ' ' + self.obs['wind_dir']
-        if 'wind_dir' in self.obs and 'wind_speed' in self.obs:
-            weather += ' at'
-        if 'wind_speed' in self.obs:
-            weather += ' ' + self.obs['wind_speed']
-        if 'wind_gust' in self.obs:
-            weather += ' gusts ' + self.obs['wind_gust']
-        if 'press'  in self.obs:
-            weather += ' press ' + self.obs['press']
-        if 'vis' in self.obs:
-            weather += ' vis ' + self.obs['vis']
+        if self.enablements.temperature == True:
+            if 'temp' in self.obs:
+                weather += ' ' + self.obs['temp']
+        if self.enablements.dewpoint == True:
+            if 'dewpt' in self.obs:
+                weather += ' dewpt ' + self.obs['dewpt']
+        if self.enablements.feelsLike == True:
+            if 'twc' in self.obs:
+                weather += ' feels ' + self.obs['twc']
+            if 'twcgust' in self.obs:
+                weather += ' feelsgust ' + self.obs['twcgust']
+        if self.enablements.wind == True:
+            if 'wind_dir' in self.obs or 'wind_speed' in self.obs:
+                weather += ' wind'
+            if 'wind_dir' in self.obs:
+                weather += ' ' + self.obs['wind_dir']
+            if 'wind_dir' in self.obs and 'wind_speed' in self.obs:
+                weather += ' at'
+            if 'wind_speed' in self.obs:
+                weather += ' ' + self.obs['wind_speed']
+            if 'wind_gust' in self.obs:
+                weather += ' gusts ' + self.obs['wind_gust']
+        if self.enablements.pressure == True:
+            if 'press'  in self.obs:
+                weather += ' press ' + self.obs['press']
+        if self.enablements.visibility == True:
+            if 'vis' in self.obs:
+                weather += ' vis ' + self.obs['vis']
         return weather
-    def run(self, station):
-        obs = self.getStationData(station)
-        self.extractObservations(obs)
-        weather = self.createWeatherString(obs)
-        print(weather)
+    def run(self, station, blockSelect):
+        self.processMetars(station, blockSelect)
 
 if __name__ == '__main__':
-    station = 'EFHK'
+    station = os.environ.get('METARSTATION', 'EFHK')
+    # station = os.environ.get('METARSTATION', 'SGAS')
+    # station = os.environ.get('METARSTATION', 'PAEL')
     metrics = MetarsConfMetric1()
     # metrics = MetarsConfImperial1()
-    metars = Metars(metrics)
-    metars.run(station)
+    metars = Metars(metrics, MetarsEnablements())
+    if 'BLOCK_BUTTON' in os.environ:
+        buttonType = os.environ['BLOCK_BUTTON']
+        if buttonType == '1' or buttonType == '2' or buttonType == '3':
+            metars.run(station, True)
+        else:
+            metars.run(station, False)
+    else:
+        metars.run(station, False)
 

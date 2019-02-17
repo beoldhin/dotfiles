@@ -232,6 +232,7 @@ bindsym XF86HomePage exec google-chrome-stable
 bindsym XF86Calculator exec speedcrunch
 bindsym XF86Mail exec konsole -e newsboat
 # bindsym XF86Explorer exec konsole -e newsboat
+bindsym --release Print exec "scrot -m '/home/quetzal/Pictures/screenshot-%s_%H%M_%d.%m.%Y_$wx$h.png'"
 
 # Assignments
 
