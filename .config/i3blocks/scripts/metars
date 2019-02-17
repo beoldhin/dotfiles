@@ -3,7 +3,7 @@
 # Required steps before running this scripts:
 # > sudo pip install python-metar
 # > sudo pacman -S libnotify
-# Possibly:
+# Possibly also:
 # > sudo pacman -S dunst
 
 import os
@@ -19,7 +19,9 @@ class MetarsEnablements:
     feelsLike = True
     wind = True
     pressure = False
-    visibility = True
+    visibility = False
+    iconifyWindDir = True
+    useInverseDirIcons = False
 
 class MetarsConfMetric1:
     temperatureUnit = 'C'
@@ -80,6 +82,53 @@ class Metars:
         if self.metrics.temperatureUnit == 'K':
             return temp + 273.15
         return 0
+    def createWindDirection(self, obs):
+        if self.enablements.iconifyWindDir == False:
+            return obs.wind_dir.compass()
+        # https://www.wpc.ncep.noaa.gov/dailywxmap/plottedwx.html
+        # "The wind direction is plotted as the shaft of an arrow extending from the
+        # station circle toward the direction from which the wind is blowing"
+        direction = obs.wind_dir.value()
+        if direction >= 337.5 and direction < 22.5:     # N
+            if self.enablements.useInverseDirIcons == True:
+                return '↓'
+            else:
+                return '↑'
+        elif direction >= 22.5 and direction < 67.5:    # NE
+            if self.enablements.useInverseDirIcons == True:
+                return '↙'
+            else:
+                return '↗'
+        elif direction >= 67.5 and direction < 112.5:   # E
+            if self.enablements.useInverseDirIcons == True:
+                return '←'
+            else:
+                return '→'
+        elif direction >= 112.5 and direction < 157.5:  # SE
+            if self.enablements.useInverseDirIcons == True:
+                return '↖'
+            else:
+                return '↘'
+        elif direction >= 157.5 and direction < 202.5:  # S
+            if self.enablements.useInverseDirIcons == True:
+                return '↑'
+            else:
+                return '↓'
+        elif direction >= 202.5 and direction < 247.5:  # SW
+            if self.enablements.useInverseDirIcons == True:
+                return '↗'
+            else:
+                return '↙'
+        elif direction >= 247.5 and direction < 292.5:  # W
+            if self.enablements.useInverseDirIcons == True:
+                return '→'
+            else:
+                return '←'
+        else:  # direction >= 292.5 and direction < 337.5  # NW
+            if self.enablements.useInverseDirIcons == True:
+                return '↘'
+            else:
+                return '↖'
     def extractObservations(self, obs):
         if obs.station_id:
             self.obs['station_id'] = obs.station_id
@@ -88,7 +137,7 @@ class Metars:
         if obs.cycle:
             self.obs['cycle'] = obs.cycle
         if obs.wind_dir:
-            self.obs['wind_dir'] = obs.wind_dir.compass()
+            self.obs['wind_dir'] = self.createWindDirection(obs)
         if obs.wind_speed:
             speed = obs.wind_speed.value(self.metrics.speedUnit)
             self.obs['wind_speed'] = '{} {}'.format(round(speed), self.metrics.speedSym)
