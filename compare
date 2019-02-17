@@ -49,6 +49,7 @@ setdir ".config/i3blocks/scripts" ".config/i3blocks/scripts"
 compare time
 compare weather
 compare volume
+compare metars
 
 setdir ".config/ranger" ".config/ranger"
 compare commands.py
