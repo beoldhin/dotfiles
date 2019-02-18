@@ -23,7 +23,7 @@ class MetarsEnablements:
     iconifyWindDir = True
     useInverseDirIcons = False
 
-class MetarsConfMetric1:
+class MetarsConfig:
     temperatureUnit = 'C'
     temperatureSym = '°C'
     pressureUnit = 'HPA'
@@ -35,17 +35,29 @@ class MetarsConfMetric1:
     precipitationUnit = 'CM'
     precipitationSym = 'cm'
 
-class MetarsConfImperial1:
-    temperatureUnit = 'F'
-    temperatureSym = '°F'
-    pressureUnit = 'HPA'
-    pressureSym = 'hPa'
-    speedUnit = 'MPH'
-    speedSym = 'mph'
-    distanceUnit = 'FT'
-    distanceSym = 'feet'
-    precipitationUnit = 'IN'
-    precipitationSym = 'in'
+# class MetarsConfig:  # Example of metric config
+#     temperatureUnit = 'C'
+#     temperatureSym = '°C'
+#     pressureUnit = 'HPA'
+#     pressureSym = 'hPa'
+#     speedUnit = 'MPS'
+#     speedSym = 'm/s'
+#     distanceUnit = 'KM'
+#     distanceSym = 'km'
+#     precipitationUnit = 'CM'
+#     precipitationSym = 'cm'
+#
+# class MetarsConfig:  # Example of imperial config
+#     temperatureUnit = 'F'
+#     temperatureSym = '°F'
+#     pressureUnit = 'HPA'
+#     pressureSym = 'hPa'
+#     speedUnit = 'MPH'
+#     speedSym = 'mph'
+#     distanceUnit = 'FT'
+#     distanceSym = 'feet'
+#     precipitationUnit = 'IN'
+#     precipitationSym = 'in'
 
 class Metars:
     obs = {}
@@ -88,6 +100,8 @@ class Metars:
         # https://www.wpc.ncep.noaa.gov/dailywxmap/plottedwx.html
         # "The wind direction is plotted as the shaft of an arrow extending from the
         # station circle toward the direction from which the wind is blowing"
+        # Here "inverse" may be more natural for modern users, showing the wind
+        # as "from-to" arrow
         direction = obs.wind_dir.value()
         if direction >= 337.5 and direction < 22.5:     # N
             if self.enablements.useInverseDirIcons == True:
@@ -165,7 +179,7 @@ class Metars:
                     twc = self.convertCelciusTo(metricChill)
                     self.obs['twc'] = '{} {}'.format(round(twc,1), self.metrics.temperatureSym)
             if 'wind_gust' in self.obs:
-                speedInKmh = obs.wind_speed.value('KMH')
+                speedInKmh = obs.wind_gust.value('KMH')
                 metricChill = self.getChillMetric(tempInCelsius, speedInKmh)
                 if metricChill != None:
                     twc = self.convertCelciusTo(metricChill)
@@ -207,7 +221,7 @@ class Metars:
             if 'twc' in self.obs:
                 weather += ' feels ' + self.obs['twc']
             if 'twcgust' in self.obs:
-                weather += ' feelsgust ' + self.obs['twcgust']
+                weather += ' gustfeels ' + self.obs['twcgust']
         if self.enablements.wind == True:
             if 'wind_dir' in self.obs or 'wind_speed' in self.obs:
                 weather += ' wind'
@@ -233,8 +247,7 @@ if __name__ == '__main__':
     station = os.environ.get('METARSTATION', 'EFHK')
     # station = os.environ.get('METARSTATION', 'SGAS')
     # station = os.environ.get('METARSTATION', 'PAEL')
-    metrics = MetarsConfMetric1()
-    # metrics = MetarsConfImperial1()
+    metrics = MetarsConfig()
     metars = Metars(metrics, MetarsEnablements())
     if 'BLOCK_BUTTON' in os.environ:
         buttonType = os.environ['BLOCK_BUTTON']
