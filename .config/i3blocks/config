@@ -5,6 +5,10 @@ markup=pango
 [metars]
 interval=600
 color=#B28BE7
+METARSSTATION=EFHK
+METARSURL=https://tgftp.nws.noaa.gov/data/observations/metar/stations/{}.TXT
+METARSENABLEMENTS={ "temperature": true, "dewpoint" : false, "feelsLike" : true, "wind" : true, "pressure" : false, "visibility" : false, "windDirType" : "icon", "useInverseWind" : false }
+METARSCONFIGS={ "temperatureUnit" : "C", "temperatureSym" : "°C", "pressureUnit" : "HPA", "pressureSym" : "hPa", "speedUnit" : "MPS", "speedSym" : "m/s", "distanceUnit" : "KM", "distanceSym" : "km", "precipitationUnit" : "CM", "precipitationSym" : "cm"}
 
 [volume]
 label=♪
