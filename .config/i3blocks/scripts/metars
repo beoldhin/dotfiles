@@ -17,18 +17,23 @@ import urllib.request
 from metar import Metar
 
 
+MetarsTestMode = True
+
+
 class MetarsSettingsEnvironment:
     def isConfigured(self):
-        # return True
-        if not 'METARSSTATION' in os.environ:
-            return False
-        if not 'METARSURL' in os.environ:
-            return False
-        if not 'METARSENABLEMENTS' in os.environ:
-            return False
-        if not 'METARSCONFIGS' in os.environ:
-            return False
-        return True
+        if not MetarsTestMode:
+            if not 'METARSSTATION' in os.environ:
+                return False
+            if not 'METARSURL' in os.environ:
+                return False
+            if not 'METARSENABLEMENTS' in os.environ:
+                return False
+            if not 'METARSCONFIGS' in os.environ:
+                return False
+            return True
+        else:
+            return True
     def extractAndUnpack(self, settings):
         try:
             extracted = json.loads(settings)
@@ -42,14 +47,16 @@ class MetarsSettingsEnvironment:
                 print('METARS extract 2: {}'.format(e))
                 sys.exit(1)
     def extract(self):
-        self.station = os.environ['METARSSTATION']
-        self.metarurl = os.environ['METARSURL']
-        enablements = os.environ['METARSENABLEMENTS']
-        configs = os.environ['METARSCONFIGS']
-        # self.station = 'EFHK'
-        # self.metarurl = 'https://tgftp.nws.noaa.gov/data/observations/metar/stations/{}.TXT'
-        # enablements = '{ "temperature": true, "dewpoint" : false, "feelsLike" : true, "wind" : true, "pressure" : false, "visibility" : false, "windDirType" : "icon", "useInverseWind" : false }'
-        # configs = '{ "temperatureUnit" : "C", "temperatureSym" : "°C", "pressureUnit" : "HPA", "pressureSym" : "hPa", "speedUnit" : "MPS", "speedSym" : "m/s", "distanceUnit" : "KM", "distanceSym" : "km", "precipitationUnit" : "CM", "precipitationSym" : "cm"}'
+        if not MetarsTestMode:
+            self.station = os.environ['METARSSTATION']
+            self.metarurl = os.environ['METARSURL']
+            enablements = os.environ['METARSENABLEMENTS']
+            configs = os.environ['METARSCONFIGS']
+        else:
+            self.station = 'EFHK'
+            self.metarurl = 'https://tgftp.nws.noaa.gov/data/observations/metar/stations/{}.TXT'
+            enablements = '{ "temperature": true, "dewpoint" : false, "feelsLike" : true, "wind" : true, "pressure" : false, "visibility" : false, "windDirType" : "icon", "useInverseWind" : false }'
+            configs = '{ "temperatureUnit" : "C", "temperatureSym" : "°C", "pressureUnit" : "HPA", "pressureSym" : "hPa", "speedUnit" : "MPS", "speedSym" : "m/s", "distanceUnit" : "KM", "distanceSym" : "km", "precipitationUnit" : "CM", "precipitationSym" : "cm"}'
         self.extractAndUnpack(enablements)
         self.extractAndUnpack(configs)
 
